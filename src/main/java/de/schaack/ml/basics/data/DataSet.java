@@ -32,6 +32,10 @@ public abstract class DataSet {
     public DataRow[] getData() {
         return this.data;
     }
+    
+    public DataRow getDataRow(int index) {
+        return this.data[index];
+    }
 
     public boolean isFinalColumnTruth() {
         System.getProperty("");

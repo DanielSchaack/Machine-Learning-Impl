@@ -9,6 +9,8 @@ import java.util.logging.SimpleFormatter;
 import de.schaack.ml.basics.config.properties.ConfigReader;
 
 public class LoggerConfig {
+    private static Logger globalLogger = Logger.getGlobal();
+
     private static Integer logBufferSize = 300;
     private static BufferingLogHandler bufferingHandler = new BufferingLogHandler(logBufferSize);
     private static boolean useConsole = true;
@@ -22,7 +24,7 @@ public class LoggerConfig {
             try {
                 useConsole = Boolean.parseBoolean(useConsolePropertyString);
             } catch (Exception e) {
-                System.err.println("useConsole must be a boolean: " + useConsolePropertyString);
+                globalLogger.severe("useConsole must be a boolean: " + useConsolePropertyString);
             }
         }
 
@@ -32,7 +34,7 @@ public class LoggerConfig {
                 logBufferSize = Integer.parseInt(buffersizePropertyString);
                 bufferingHandler = new BufferingLogHandler(logBufferSize);
             } catch (Exception e) {
-                System.err.println("buffersize must be an int: " + buffersizePropertyString);
+                globalLogger.severe("buffersize must be an int: " + buffersizePropertyString);
             }
         }
 
@@ -42,7 +44,7 @@ public class LoggerConfig {
                 logLevel = Level.parse(levelPropertyString);
                 bufferingHandler = new BufferingLogHandler(logBufferSize);
             } catch (Exception e) {
-                System.err.println("level must be a Level: " + buffersizePropertyString);
+                globalLogger.severe("level must be a Level: " + buffersizePropertyString);
             }
         }
 
@@ -70,11 +72,11 @@ public class LoggerConfig {
             java.nio.file.Files.createDirectories(java.nio.file.Paths.get(logFolderName));
 
             // Create and add file handler
-            FileHandler fileHandler = new FileHandler(logFolderName + "/" + logFileName, 1000000, 5, false);
+            FileHandler fileHandler = new FileHandler(logFolderName + "/" + logFileName, 1000000, 5, true);
             fileHandler.setFormatter(new SimpleFormatter());
             logger.addHandler(fileHandler);
         } catch (IOException e) {
-            System.err.println("Failed to create log file: " + e.getMessage());
+            globalLogger.severe("Failed to create log file: " + e.getMessage());
         }
     }
 

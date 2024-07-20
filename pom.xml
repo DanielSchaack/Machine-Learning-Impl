@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>de.schaack.ml</groupId>
 	<artifactId>basics</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>basics</name>
 	<description>Implementation of basic Machine Learning concepts</description>
 	<url/>
