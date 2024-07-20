@@ -1,7 +1,3 @@
-spring:
-  application:
-    name: basics
-
-config:
+ml-basics:
   binary-confusion-matrix:
-    parallel: false
+    parallel: 

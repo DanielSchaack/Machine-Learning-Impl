@@ -1,7 +1,5 @@
 package de.schaack.ml.basics.functions.evaluations.classification.binary;
 
-import lombok.Getter;
-
 /**
  * Represents a binary classification prediction with associated truth and
  * predicted values, along with its evaluation (true positive, false
@@ -10,7 +8,6 @@ import lombok.Getter;
 public class BinaryClassificationPrediction {
     private final boolean groundTruthLabel;
     private final boolean predictionLabel;
-    @Getter
     private final BinaryEvaluationEnum evaluation;
 
     /**
@@ -20,11 +17,12 @@ public class BinaryClassificationPrediction {
      * determine if it's true positive (TP), false positive (FP), etc., based on
      * prediction label against ground truth labels.
      * 
-     * @param groundTruthLabel     Whether the actual label matches the given instance's
-     *                    expected classification outcome. Default: `false`.
-     * @param predictionLabel The predicted binary value from a model for an input
-     *                    instance. Should be either 'true' or 'false'. Default:
-     *                    `false`.
+     * @param groundTruthLabel Whether the actual label matches the given instance's
+     *                         expected classification outcome. Default: `false`.
+     * @param predictionLabel  The predicted binary value from a model for an input
+     *                         instance. Should be either 'true' or 'false'.
+     *                         Default:
+     *                         `false`.
      */
     public BinaryClassificationPrediction(boolean groundTruthLabel, boolean predictionLabel) {
         this.groundTruthLabel = groundTruthLabel;
@@ -55,4 +53,17 @@ public class BinaryClassificationPrediction {
         else
             return BinaryEvaluationEnum.FALSE_NEGATIVE;
     }
+
+    public BinaryEvaluationEnum getEvaluation() {
+        return this.evaluation;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryClassificationPrediction: [" +
+                "groundTruthLabel=" + groundTruthLabel + ", " +
+                "predictionLabel=" + predictionLabel + ", " +
+                "evaluation=" + evaluation + "]";
+    }
+
 }

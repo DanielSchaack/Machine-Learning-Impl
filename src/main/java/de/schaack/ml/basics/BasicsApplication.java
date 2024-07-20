@@ -1,33 +1,27 @@
 package de.schaack.ml.basics;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import de.schaack.ml.basics.config.BinaryConfusionMatrixConfig;
+import de.schaack.ml.basics.config.ConfigReader;
 
-import lombok.extern.slf4j.Slf4j;
+public class BasicsApplication {
 
-@Slf4j
-@SpringBootApplication
-public class BasicsApplication implements CommandLineRunner {
+	public static void main(String... args) {
+		init();
 
-	public static void main(String[] args) {
-		SpringApplication.run(BasicsApplication.class, args);
+		// Command line logic here
+		System.out.println("Hello, this is running from the command line!");
+
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		// Command line logic here
-		log.info("Hello, this is running from the command line!");
+	private static void init() {
+		// Reference to ConfigReader will force its initialization
+		System.out.println("Initializing application...");
 
-		// Example: Print all command line arguments
-		if (args.length > 0) {
-			log.info("Command line arguments:");
-			for (String arg : args) {
-				log.info(arg);
-			}
+		if (ConfigReader.getProperties() != null) {
+			System.out.println("Configuration files loaded successfully.");
+			ConfigReader.getProperties().forEach((key, value) -> System.out.println(key + "=" + value));
 		} else {
-			log.info("No command line arguments found.");
+			System.out.println("Failed to load configuration files.");
 		}
 	}
-
 }

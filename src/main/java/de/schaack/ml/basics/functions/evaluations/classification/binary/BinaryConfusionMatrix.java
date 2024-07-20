@@ -1,39 +1,36 @@
 package de.schaack.ml.basics.functions.evaluations.classification.binary;
 
+import static de.schaack.ml.basics.functions.evaluations.classification.binary.BinaryEvaluationEnum.FALSE_NEGATIVE;
+import static de.schaack.ml.basics.functions.evaluations.classification.binary.BinaryEvaluationEnum.FALSE_POSITIVE;
+import static de.schaack.ml.basics.functions.evaluations.classification.binary.BinaryEvaluationEnum.TRUE_NEGATIVE;
+import static de.schaack.ml.basics.functions.evaluations.classification.binary.BinaryEvaluationEnum.TRUE_POSITIVE;
+
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.StreamSupport;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import static de.schaack.ml.basics.functions.evaluations.classification.binary.BinaryEvaluationEnum.*;
 import de.schaack.ml.basics.config.BinaryConfusionMatrixConfig;
-import lombok.Getter;
 
-@Component
 public class BinaryConfusionMatrix {
 
-    @Autowired
-    private BinaryConfusionMatrixConfig config;
+    private final BinaryConfusionMatrixConfig config;
 
-    EnumMap<BinaryEvaluationEnum, AtomicLong> evaluationMap = new EnumMap<>(BinaryEvaluationEnum.class);
+    private EnumMap<BinaryEvaluationEnum, AtomicLong> evaluationMap = new EnumMap<>(BinaryEvaluationEnum.class);
 
-    @Getter
     private Double accuracy = 0.0;
-    @Getter
     private Double precision = 0.0;
-    @Getter
     private Double recall = 0.0;
-    @Getter
     private Double f1 = 0.0;
 
-    public BinaryConfusionMatrix(Collection<BinaryClassificationPrediction> predictions) {
+    public BinaryConfusionMatrix(BinaryConfusionMatrixConfig config,
+            Collection<BinaryClassificationPrediction> predictions) {
+        this.config = config;
         addEvaluations(predictions);
     }
 
-    public void addEvaluations(Collection<BinaryClassificationPrediction> predictions) {
+    public BinaryConfusionMatrix addEvaluations(Collection<BinaryClassificationPrediction> predictions) {
         StreamSupport.stream(predictions.spliterator(), this.config.isParallel())
                 .forEach(prediction -> incrementEvaluation(prediction.getEvaluation()));
         this.setAccuracy(evaluationMap.get(TRUE_POSITIVE).get(), evaluationMap.get(TRUE_NEGATIVE).get(),
@@ -41,6 +38,7 @@ public class BinaryConfusionMatrix {
         this.setPrecision(evaluationMap.get(TRUE_POSITIVE).get(), evaluationMap.get(FALSE_POSITIVE).get());
         this.setRecall(evaluationMap.get(TRUE_POSITIVE).get(), evaluationMap.get(FALSE_NEGATIVE).get());
         this.setF1Score(this.precision, this.recall);
+        return this;
     }
 
     private void incrementEvaluation(BinaryEvaluationEnum evaluation) {
@@ -155,4 +153,36 @@ public class BinaryConfusionMatrix {
         this.f1 = numerator / denominator;
         return this;
     }
+
+    public Map<BinaryEvaluationEnum, AtomicLong> getEvaluationMap() {
+        return this.evaluationMap;
+    }
+
+    public Double getAccuracy() {
+        return this.accuracy;
+    }
+
+    public Double getPrecision() {
+        return this.precision;
+    }
+
+    public Double getRecall() {
+        return this.recall;
+    }
+
+    public Double getF1() {
+        return this.f1;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryConfusionMatrix: [" +
+                "config=" + config + ", " +
+                "evaluationMap=" + evaluationMap + ", " +
+                "accuracy=" + accuracy + ", " +
+                "precision=" + precision + ", " +
+                "recall=" + recall + ", " +
+                "f1=" + f1 + "]";
+    }
+
 }

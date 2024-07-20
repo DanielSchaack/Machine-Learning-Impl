@@ -1,15 +1,25 @@
 package de.schaack.ml.basics.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import de.schaack.ml.basics.config.interfaces.ParallelSettings;
 
-import lombok.Getter;
+public class BinaryConfusionMatrixConfig implements ParallelSettings {
 
-@Getter
-@Configuration
-public class BinaryConfusionMatrixConfig {
+  private boolean isParallel = false;
 
-  @Value("${config.binary-confusion-matrix.parallel}")
-  private boolean isParallel;
+  static {
+    new BinaryConfusionMatrixConfig().init();
+  }
+
+  @Override
+  public boolean isParallel() {
+    return isParallel;
+  }
+
+  @Override
+  public void init() {
+    String isParallelPropertyString = ConfigReader.getProperty("ml-basics.binary-confusion-matrix.parallel");
+    this.isParallel = Boolean.valueOf(isParallelPropertyString);
+    System.out.println("BinaryConfusionMatrixConfig: isParallel=" + isParallel);
+  }
 
 }
