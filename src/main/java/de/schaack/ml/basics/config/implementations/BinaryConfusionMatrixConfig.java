@@ -1,6 +1,7 @@
-package de.schaack.ml.basics.config;
+package de.schaack.ml.basics.config.implementations;
 
 import de.schaack.ml.basics.config.interfaces.ParallelSettings;
+import de.schaack.ml.basics.config.properties.ConfigReader;
 
 public class BinaryConfusionMatrixConfig implements ParallelSettings {
 
@@ -21,5 +22,4 @@ public class BinaryConfusionMatrixConfig implements ParallelSettings {
     this.isParallel = Boolean.valueOf(isParallelPropertyString);
     System.out.println("BinaryConfusionMatrixConfig: isParallel=" + isParallel);
   }
-
 }

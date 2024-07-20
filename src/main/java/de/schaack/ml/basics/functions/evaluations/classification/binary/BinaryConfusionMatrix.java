@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.StreamSupport;
 
-import de.schaack.ml.basics.config.BinaryConfusionMatrixConfig;
+import de.schaack.ml.basics.config.implementations.BinaryConfusionMatrixConfig;
 
 public class BinaryConfusionMatrix {
 
@@ -154,8 +154,19 @@ public class BinaryConfusionMatrix {
         return this;
     }
 
-    public Map<BinaryEvaluationEnum, AtomicLong> getEvaluationMap() {
+    public Map<BinaryEvaluationEnum, AtomicLong> getAtomicEvaluationMap() {
         return this.evaluationMap;
+    }
+
+    public Map<BinaryEvaluationEnum, Long> getEvaluationMap() {
+        EnumMap<BinaryEvaluationEnum, AtomicLong> currentEnumMap = (EnumMap<BinaryEvaluationEnum, AtomicLong>) this
+                .getAtomicEvaluationMap();
+        EnumMap<BinaryEvaluationEnum, Long> newEnumMap = new EnumMap<>(BinaryEvaluationEnum.class);
+
+        for (BinaryEvaluationEnum entry : getAtomicEvaluationMap().keySet()) {
+            newEnumMap.put(entry, currentEnumMap.get(entry).get());
+        }
+        return newEnumMap;
     }
 
     public Double getAccuracy() {

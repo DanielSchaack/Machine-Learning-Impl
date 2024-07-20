@@ -1,10 +1,8 @@
-package de.schaack.ml.basics.config;
+package de.schaack.ml.basics.config.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import de.schaack.ml.basics.util.YamlParser;
 
 public class ConfigReader {
     private static final String[] CONFIG_FILES = { "application.yaml", "application.yml", "application.properties" };

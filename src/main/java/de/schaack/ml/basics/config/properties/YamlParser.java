@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.util;
+package de.schaack.ml.basics.config.properties;
 
 import java.io.InputStream;
 import java.util.Map;
