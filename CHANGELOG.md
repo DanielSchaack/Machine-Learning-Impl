@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.5] 2024-07-22
+### CHANGED
+- Refactored Logging to be configurable through logback (No longer reinventing the wheel)
+
 ## [0.0.4] 2024-07-20
 ### ADDED
 - Model Interfaces and example implementation with a Perceptron
@@ -14,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             - Clusterer
             - Regressor
         - ModelSettings
+            - PerceptronModelSettings
+        
 ### CHANGED
 - Refactored Logging
     - Now injectable into Models

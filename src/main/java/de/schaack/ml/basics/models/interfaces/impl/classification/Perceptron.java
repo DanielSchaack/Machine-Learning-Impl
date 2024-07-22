@@ -13,7 +13,11 @@ public class Perceptron extends BaseModel implements Classifier {
     
 
     public Perceptron() {
-        super(Perceptron.class.getSimpleName(), new PerceptronModelSettings());
+        super(new PerceptronModelSettings());
+    }
+
+    public Perceptron(PerceptronModelSettings settings) {
+        super(settings);
     }
 
     
