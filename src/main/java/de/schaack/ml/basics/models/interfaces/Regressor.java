@@ -1,7 +1,7 @@
 package de.schaack.ml.basics.models.interfaces;
 
-import de.schaack.ml.basics.data.DataRow;
+import de.schaack.ml.basics.data.DataPoint;
 
 public interface Regressor extends ModelInterface {
-    double predict(DataRow point);
+    double predict(DataPoint point);
 }

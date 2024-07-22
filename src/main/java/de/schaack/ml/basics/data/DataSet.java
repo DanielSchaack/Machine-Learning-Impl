@@ -1,53 +1,125 @@
 package de.schaack.ml.basics.data;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Random;
 
-public abstract class DataSet {
-    private final String[] labels;
-    private final DataRow[] data;
-    private final boolean isFinalColumnTruth;
+/**
+ * Represents a collection of data points and provides various methods to access
+ * and manipulate the data.
+ */
+public interface DataSet extends Iterable<DataPoint> {
 
-    protected DataSet(Collection<DataRow> dataRows, Collection<String> labels, boolean isFinalColumnTruth) {
-        if (dataRows.isEmpty())
-            throw new IllegalArgumentException("DataRows must not be empty.");
+    /**
+     * Retrieves the number of features in the dataset.
+     *
+     * @return the number of features.
+     */
+    int getNumberOfFeatures();
 
-        if (!isDataRowSizeUniversal(dataRows))
-            throw new IllegalArgumentException("The size of dataRow.dataColumns must be equal to the size of labels");
-        this.data = dataRows.toArray(new DataRow[dataRows.size()]);
-        this.labels = labels.toArray(new String[labels.size()]);
-        this.isFinalColumnTruth = isFinalColumnTruth;
-    }
+    /**
+     * Retrieves the number of data points in the dataset.
+     *
+     * @return the number of data points.
+     */
+    int getNumberOfDataPoints();
 
-    public static boolean isDataRowSizeUniversal(Collection<DataRow> dataRows) {
-        int firstDataRowSize = dataRows.iterator().next().getDataColumns().length;
-        return dataRows.stream()
-                .allMatch(dataRow -> dataRow.getDataColumns().length == firstDataRowSize);
-    }
+    /**
+     * Retrieves all data points in the dataset.
+     *
+     * @return an array of {@link DataPoint} objects.
+     */
+    DataPoint[] getDataPoints();
 
-    public String[] getLabels() {
-        return this.labels;
-    }
+    /**
+     * Retrieves the data point at the specified index.
+     *
+     * @param index the index of the data point to retrieve.
+     * @return the {@link DataPoint} at the specified index.
+     */
+    DataPoint getDataPoint(int index);
 
-    public DataRow[] getData() {
-        return this.data;
-    }
-    
-    public DataRow getDataRow(int index) {
-        return this.data[index];
-    }
+    /**
+     * Retrieves the data column at the specified index.
+     *
+     * @param index the index of the data column to retrieve.
+     * @return the {@link DataColumn} at the specified index.
+     */
+    DataColumn getColumn(int index);
 
-    public boolean isFinalColumnTruth() {
-        System.getProperty("");
-        return this.isFinalColumnTruth;
-    }
+    /**
+     * Retrieves all feature values in the dataset.
+     *
+     * @return a 2D array of double values representing the features.
+     */
+    double[][] getFeatures();
 
-    @Override
-    public String toString() {
-        return "DataSet: [" +
-                "labels=" + Arrays.toString(labels) + ", " +
-                "datasize=" + data.length + ", " +
-                "isFinalColumnTruth=" + isFinalColumnTruth + "]";
-    }
+    /**
+     * Checks if the dataset contains labels.
+     *
+     * @return <code>true</code> if the dataset contains labels; <code>false</code>
+     *         otherwise.
+     */
+    boolean hasLabels();
 
+    /**
+     * Retrieves all labels in the dataset.
+     *
+     * @return an array of double values representing the labels.
+     */
+    double[] getLabels();
+
+    /**
+     * Checks if the dataset contains attribute names.
+     *
+     * @return <code>true</code> if the dataset contains attribute names;
+     *         <code>false</code> otherwise.
+     */
+    boolean hasAttributeNames();
+
+    /**
+     * Retrieves all attribute names in the dataset.
+     *
+     * @return an array of strings representing the attribute names.
+     */
+    String[] attributeNames();
+
+    /**
+     * Checks if the dataset contains attribute descriptions.
+     *
+     * @return <code>true</code> if the dataset contains attribute descriptions;
+     *         <code>false</code> otherwise.
+     */
+    boolean hasAttributeDescriptions();
+
+    /**
+     * Retrieves all attribute descriptions in the dataset.
+     *
+     * @return an array of strings representing the attribute descriptions.
+     */
+    String[] attributeDescriptions();
+
+    /**
+     * Retrieves a subset of the dataset at the specified indices.
+     *
+     * @param indices an array of indices for the data points to retrieve.
+     * @return a new {@link DataSet} containing the subset of data points.
+     */
+    DataSet subset(int[] indices);
+
+    /**
+     * Retrieves a subset of the dataset from the specified beginning index
+     * (inclusive) to the end index (exclusive).
+     *
+     * @param indexBeginning the beginning index (inclusive).
+     * @param indexEnd       the end index (exclusive).
+     * @return a new {@link DataSet} containing the subset of data points.
+     */
+    DataSet subset(int indexBeginning, int indexEnd);
+
+    /**
+     * Shuffles the data points in the dataset using the specified random number
+     * generator.
+     *
+     * @param random the random number generator to use for shuffling.
+     */
+    void shuffle(Random random);
 }

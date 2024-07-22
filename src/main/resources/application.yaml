@@ -1,12 +1,8 @@
 logging:
   level: DEBUG
+  file:
+    immediate-flush: true
 
 ml-basics:
-  logger:
-    useConsole: true
-    buffersize: 300
-    level: CONFIG
-    foldername: logs
-    filename: application.log
   binary-confusion-matrix:
     parallel: 
