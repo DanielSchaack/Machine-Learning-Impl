@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.models.settings.impl;
+package de.schaack.ml.basics.settings.implementation;
 
 import de.schaack.ml.basics.config.interfaces.ParallelSettings;
 import de.schaack.ml.basics.config.properties.ConfigReader;

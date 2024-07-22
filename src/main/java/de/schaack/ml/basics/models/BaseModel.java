@@ -3,7 +3,7 @@ package de.schaack.ml.basics.models;
 import java.util.Map;
 
 import de.schaack.ml.basics.config.logging.LoggingUtils;
-import de.schaack.ml.basics.models.settings.ModelSettings;
+import de.schaack.ml.basics.settings.interfaces.ModelSettings;
 
 public abstract class BaseModel {
 

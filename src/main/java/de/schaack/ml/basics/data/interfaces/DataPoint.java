@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.data;
+package de.schaack.ml.basics.data.interfaces;
 
 /**
  * Represents a data point with features and an optional label.

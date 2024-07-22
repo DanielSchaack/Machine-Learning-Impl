@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.data.loader;
+package de.schaack.ml.basics.functions.loader;
 
 public interface DataLoaderInterface {
     

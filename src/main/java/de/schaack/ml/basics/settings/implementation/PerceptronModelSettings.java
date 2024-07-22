@@ -1,11 +1,11 @@
-package de.schaack.ml.basics.models.settings.impl;
+package de.schaack.ml.basics.settings.implementation;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.schaack.ml.basics.functions.activation.ActivationFunction;
-import de.schaack.ml.basics.functions.activation.impl.SigmoidActivation;
-import de.schaack.ml.basics.models.settings.ModelSettings;
+import de.schaack.ml.basics.functions.activation.implementation.SigmoidActivation;
+import de.schaack.ml.basics.functions.activation.interfaces.ActivationFunction;
+import de.schaack.ml.basics.settings.interfaces.ModelSettings;
 
 public class PerceptronModelSettings implements ModelSettings {
     private double learningRate = 0.1;

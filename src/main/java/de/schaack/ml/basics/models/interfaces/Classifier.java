@@ -2,7 +2,7 @@ package de.schaack.ml.basics.models.interfaces;
 
 import java.util.Map;
 
-import de.schaack.ml.basics.data.DataPoint;
+import de.schaack.ml.basics.data.interfaces.DataPoint;
 
 public interface Classifier extends ModelInterface {
     int predict(DataPoint point);

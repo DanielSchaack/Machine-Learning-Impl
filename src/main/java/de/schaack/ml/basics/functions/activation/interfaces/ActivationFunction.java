@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.functions.activation;
+package de.schaack.ml.basics.functions.activation.interfaces;
 
 
 public interface ActivationFunction {

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.StreamSupport;
 
-import de.schaack.ml.basics.models.settings.impl.BinaryConfusionMatrixConfig;
+import de.schaack.ml.basics.settings.implementation.BinaryConfusionMatrixConfig;
 
 public class BinaryConfusionMatrix {
 

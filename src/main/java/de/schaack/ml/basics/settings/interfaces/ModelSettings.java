@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.models.settings;
+package de.schaack.ml.basics.settings.interfaces;
 
 import java.util.Map;
 

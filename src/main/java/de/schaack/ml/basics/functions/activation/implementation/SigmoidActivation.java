@@ -1,6 +1,6 @@
-package de.schaack.ml.basics.functions.activation.impl;
+package de.schaack.ml.basics.functions.activation.implementation;
 
-import de.schaack.ml.basics.functions.activation.ActivationFunction;
+import de.schaack.ml.basics.functions.activation.interfaces.ActivationFunction;
 
 public class SigmoidActivation implements ActivationFunction {
 

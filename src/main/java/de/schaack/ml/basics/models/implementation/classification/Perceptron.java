@@ -1,12 +1,12 @@
-package de.schaack.ml.basics.models.interfaces.impl.classification;
+package de.schaack.ml.basics.models.implementation.classification;
 
 import java.util.Map;
 
-import de.schaack.ml.basics.data.DataPoint;
-import de.schaack.ml.basics.data.DataSet;
+import de.schaack.ml.basics.data.interfaces.DataPoint;
+import de.schaack.ml.basics.data.interfaces.DataSet;
 import de.schaack.ml.basics.models.BaseModel;
 import de.schaack.ml.basics.models.interfaces.Classifier;
-import de.schaack.ml.basics.models.settings.impl.PerceptronModelSettings;
+import de.schaack.ml.basics.settings.implementation.PerceptronModelSettings;
 
 public class Perceptron extends BaseModel implements Classifier {
 

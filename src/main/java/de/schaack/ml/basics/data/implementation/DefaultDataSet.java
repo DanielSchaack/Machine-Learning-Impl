@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.data.def;
+package de.schaack.ml.basics.data.implementation;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Random;
 
-import de.schaack.ml.basics.data.DataColumn;
-import de.schaack.ml.basics.data.DataPoint;
-import de.schaack.ml.basics.data.DataSet;
+import de.schaack.ml.basics.data.interfaces.DataColumn;
+import de.schaack.ml.basics.data.interfaces.DataPoint;
+import de.schaack.ml.basics.data.interfaces.DataSet;
 
 /**
  * A default implementation of the {@link DataSet} interface.

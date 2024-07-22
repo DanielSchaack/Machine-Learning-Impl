@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.data;
+package de.schaack.ml.basics.data.interfaces;
 
 import java.util.Random;
 

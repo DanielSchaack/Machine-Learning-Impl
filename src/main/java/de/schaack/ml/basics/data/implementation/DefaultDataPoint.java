@@ -1,8 +1,8 @@
-package de.schaack.ml.basics.data.def;
+package de.schaack.ml.basics.data.implementation;
 
 import java.util.Arrays;
 
-import de.schaack.ml.basics.data.DataPoint;
+import de.schaack.ml.basics.data.interfaces.DataPoint;
 
 /**
  * A default implementation of the {@link DataPoint} interface.

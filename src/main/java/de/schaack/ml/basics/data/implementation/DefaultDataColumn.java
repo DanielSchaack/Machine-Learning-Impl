@@ -1,9 +1,9 @@
-package de.schaack.ml.basics.data.def;
+package de.schaack.ml.basics.data.implementation;
 
 import java.util.Arrays;
 
-import de.schaack.ml.basics.data.DataColumn;
-import de.schaack.ml.basics.data.Statistics;
+import de.schaack.ml.basics.data.interfaces.DataColumn;
+import de.schaack.ml.basics.data.interfaces.Statistics;
 
 /**
  * A default implementation of the {@link DataColumn} interface.
