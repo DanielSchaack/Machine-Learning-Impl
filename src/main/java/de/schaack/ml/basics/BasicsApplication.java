@@ -1,14 +1,17 @@
 package de.schaack.ml.basics;
 
-import de.schaack.ml.basics.config.logging.LoggingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BasicsApplication {
+
+	private static final Logger log = LoggerFactory.getLogger(BasicsApplication.class);
 
 	public static void main(String... args) {
 		run(args);
 	}
 
 	private static void run(String[] args) {
-		LoggingUtils.info("Hello, this is running from the command line!");
+		log.info("Hello, this is running from the command line!");
 	}
 }

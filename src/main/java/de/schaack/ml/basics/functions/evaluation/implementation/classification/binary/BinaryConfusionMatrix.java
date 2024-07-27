@@ -1,9 +1,6 @@
-package de.schaack.ml.basics.functions.evaluation.classification.binary;
+package de.schaack.ml.basics.functions.evaluation.implementation.classification.binary;
 
-import static de.schaack.ml.basics.functions.evaluation.classification.binary.BinaryEvaluationEnum.FALSE_NEGATIVE;
-import static de.schaack.ml.basics.functions.evaluation.classification.binary.BinaryEvaluationEnum.FALSE_POSITIVE;
-import static de.schaack.ml.basics.functions.evaluation.classification.binary.BinaryEvaluationEnum.TRUE_NEGATIVE;
-import static de.schaack.ml.basics.functions.evaluation.classification.binary.BinaryEvaluationEnum.TRUE_POSITIVE;
+import static de.schaack.ml.basics.functions.evaluation.implementation.classification.binary.BinaryEvaluationEnum.*;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -11,8 +8,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.StreamSupport;
 
-import de.schaack.ml.basics.settings.implementation.BinaryConfusionMatrixConfig;
+import de.schaack.ml.basics.settings.model.implementation.evaluation.BinaryConfusionMatrixConfig;
 
+//TODO New docs, utilize in Perceptron
 public class BinaryConfusionMatrix {
 
     private final BinaryConfusionMatrixConfig config;

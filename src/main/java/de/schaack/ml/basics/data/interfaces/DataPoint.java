@@ -1,5 +1,7 @@
 package de.schaack.ml.basics.data.interfaces;
 
+import java.util.Optional;
+
 /**
  * Represents a data point with features and an optional label.
  */
@@ -30,7 +32,30 @@ public interface DataPoint {
     /**
      * Checks if the data point has a label.
      *
-     * @return <code>true</code> if the data point has a label; <code>false</code> otherwise.
+     * @return <code>true</code> if the data point has a label; <code>false</code>
+     *         otherwise.
      */
     boolean hasLabel();
+
+    /**
+     * Retrieves the bias of the data point.
+     *
+     * @return the bias of the data point.
+     */
+    Optional<Double> getBias();
+
+    /**
+     * Retrieves all values but the bias of the data point.
+     *
+     * @return all values but the bias of the data point.
+     */
+    double[] getNonBias();
+
+    /**
+     * Checks if the data point has a bias.
+     *
+     * @return <code>true</code> if the data point has a bias; <code>false</code>
+     *         otherwise.
+     */
+    boolean hasBias();
 }

@@ -1,4 +1,4 @@
-package de.schaack.ml.basics.functions.evaluation.classification.binary;
+package de.schaack.ml.basics.functions.evaluation.implementation.classification.binary;
 
 /**
  * Represents a binary classification prediction with associated truth and

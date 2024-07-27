@@ -1,13 +1,11 @@
 package de.schaack.ml.basics;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
+//TODO
+class BasicsApplicationTests {
 
-// @SpringBootTest
-// class BasicsApplicationTests {
+	@Test
+	void contextLoads() {
+	}
 
-// 	@Test
-// 	void contextLoads() {
-// 	}
-
-// }
+}

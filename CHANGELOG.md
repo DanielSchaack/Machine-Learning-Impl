@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.8] 2024-07-27
+### ADDED
+- Optimiser interfaces
+- Stochastic Gradient Descent as an optimizer
+- ZeroWeightInitialisation as an initialiser
+- LossFunction expended by functions
+- BCE as a loss
+- DataLoaderInterface expended by functions
+- Simple Matrix/array functions
+- DefaultDataLoader as an implementation
+- SingleModelPipeline as the foundation of training a model
+    - Perceptron Implementation
+
+### CHANGED
+- Default for flushing the logs set to false
+- Changed individual predicts from Model interfaces into a generic in the parent interface
+- Functions for ModelSettings moved to SingleModelPipeline
+### REMOVED
+- BaseModel 
+- Classifier-, Regressor, Clusterer-Interface
+- LoggingUtils
+### TODO
+- EvaluationFunction
+    - Implementation for BinaryClasification
+- Unit tests
+- Gaussian Distribution function
+- Perceptron example for XOR, see PerceptronXorModel.java
+
 ## [0.0.7] 2024-07-22
 ### CHANGED
 - Folder structure into subject/implementation and subject/interfaces

@@ -140,7 +140,7 @@ public class DefaultDataColumn implements DataColumn {
     @Override
     public double[] subset(int indexBeginning, int indexEnd)
             throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (indexEnd <= indexBeginning) {
+        if (indexEnd < indexBeginning) {
             throw new IllegalArgumentException("The beginning index must be smaller than the ending index");
         }
         if (indexBeginning < 0 || indexEnd < 0 || indexEnd >= getFeatures().length) {

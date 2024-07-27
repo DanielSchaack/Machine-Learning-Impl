@@ -11,8 +11,8 @@ public class DefaultStatistics implements Statistics {
 
     private double[] features;
     private int count;
-    private double min = Double.MAX_VALUE;
-    private double max = Double.MIN_VALUE;
+    private double min = 0;
+    private double max = 0;
     private double sum = 0;
 
     /**

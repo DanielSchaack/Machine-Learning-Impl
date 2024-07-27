@@ -61,7 +61,14 @@ public interface DataSet extends Iterable<DataPoint> {
     boolean hasLabels();
 
     /**
-     * Retrieves all labels in the dataset.
+     * Sets if the dataset contains labels.
+     *
+     * @return the adjusted DataSet
+     */
+    DataSet setHasLabels(boolean hasLabels);
+
+    /**
+     * Retrieves all labels in the dataset as a double[].
      *
      * @return an array of double values representing the labels.
      */
@@ -103,7 +110,7 @@ public interface DataSet extends Iterable<DataPoint> {
      * @param indices an array of indices for the data points to retrieve.
      * @return a new {@link DataSet} containing the subset of data points.
      */
-    DataSet subset(int[] indices);
+    DataSet subset(Integer[] indices);
 
     /**
      * Retrieves a subset of the dataset from the specified beginning index

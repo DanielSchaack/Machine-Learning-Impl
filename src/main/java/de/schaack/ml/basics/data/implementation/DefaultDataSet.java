@@ -18,7 +18,7 @@ public class DefaultDataSet implements DataSet {
     private final String[] attributeNames;
     private final String[] attributeDescriptions;
     private final DataPoint[] dataPoints;
-    private final boolean hasLabels;
+    private boolean hasLabels;
     private final int numberOfFeatures;
     private final int numberOfDataPoints;
 
@@ -92,7 +92,8 @@ public class DefaultDataSet implements DataSet {
      * @throws IllegalArgumentException if the input is invalid.
      */
     public DefaultDataSet(Collection<DataPoint> dataPoints, Collection<String> attributeNames,
-            Collection<String> attributeDescriptions, boolean hasLabels) throws IllegalArgumentException {
+            Collection<String> attributeDescriptions, boolean hasLabels)
+            throws IllegalArgumentException {
         if (dataPoints.isEmpty()) {
             throw new IllegalArgumentException("dataPoints must not be empty.");
         }
@@ -104,19 +105,22 @@ public class DefaultDataSet implements DataSet {
         this.numberOfDataPoints = dataPoints.size();
         this.dataPoints = dataPoints.toArray(new DataPoint[this.numberOfDataPoints]);
         this.numberOfFeatures = this.dataPoints[0].getEntries().length;
+        this.hasLabels = hasLabels;
 
-        if (attributeNames == null
-                || (attributeDescriptions != null && attributeDescriptions.size() != attributeNames.size())
+        if ((attributeNames != null && attributeDescriptions != null)
+                && (attributeDescriptions.size() != attributeNames.size())
                 || attributeNames.size() != numberOfFeatures) {
             throw new IllegalArgumentException(
                     "Invalid input: names must not be null, descriptions length must match names length, and they must all have the same number of entries as the number of features.");
         }
 
-        this.attributeNames = attributeNames.toArray(new String[attributeNames.size()]);
+        this.attributeNames = attributeNames != null
+                ? attributeNames.toArray(new String[attributeNames.size()])
+                : new String[0];
+
         this.attributeDescriptions = attributeDescriptions != null
                 ? attributeDescriptions.toArray(new String[attributeDescriptions.size()])
                 : new String[0];
-        this.hasLabels = hasLabels;
     }
 
     /**
@@ -197,12 +201,18 @@ public class DefaultDataSet implements DataSet {
         return features;
     }
 
+    @Override
+    public boolean hasLabels() {
+        return hasLabels;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean hasLabels() {
-        return hasLabels;
+    public DataSet setHasLabels(boolean hasLabels) {
+        this.hasLabels = hasLabels;
+        return this;
     }
 
     /**
@@ -258,7 +268,7 @@ public class DefaultDataSet implements DataSet {
      * {@inheritDoc}
      */
     @Override
-    public DataSet subset(int[] indices) {
+    public DataSet subset(Integer[] indices) {
         DataPoint[] subsetDataPoints = new DataPoint[indices.length];
         for (int i = 0; i < indices.length; i++) {
             subsetDataPoints[i] = getDataPoint(indices[i]);
@@ -279,7 +289,7 @@ public class DefaultDataSet implements DataSet {
      */
     @Override
     public DataSet subset(int indexBeginning, int indexEnd) throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (indexEnd <= indexBeginning) {
+        if (indexEnd < indexBeginning) {
             throw new IllegalArgumentException("The beginning index must be smaller than the ending index.");
         }
         if (indexBeginning < 0 || indexEnd < 0 || indexEnd >= getNumberOfDataPoints()) {

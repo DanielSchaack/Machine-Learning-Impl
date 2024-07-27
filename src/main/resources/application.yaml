@@ -1,7 +1,8 @@
 logging:
   level: DEBUG
   file:
-    immediate-flush: true
+    immediate-flush: false
+    append: true
 
 ml-basics:
   binary-confusion-matrix:

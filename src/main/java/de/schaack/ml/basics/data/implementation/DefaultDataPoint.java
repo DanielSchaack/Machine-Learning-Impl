@@ -1,6 +1,7 @@
 package de.schaack.ml.basics.data.implementation;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import de.schaack.ml.basics.data.interfaces.DataPoint;
 
@@ -11,6 +12,7 @@ public class DefaultDataPoint implements DataPoint {
 
     private double[] features;
     private Double label;
+    private boolean hasBias = false;
 
     /**
      * Constructs a {@code DefaultDataPoint} with the specified features and no
@@ -19,8 +21,9 @@ public class DefaultDataPoint implements DataPoint {
      * @param features an array of double values representing the features of the
      *                 data point.
      */
-    public DefaultDataPoint(double[] features) {
-        this(features, null);
+    public DefaultDataPoint(double[] features, boolean includeBias) {
+
+        this(features, null, includeBias);
     }
 
     /**
@@ -30,8 +33,15 @@ public class DefaultDataPoint implements DataPoint {
      *                 data point.
      * @param label    the label of the data point, which can be {@code null}.
      */
-    public DefaultDataPoint(double[] features, Double label) {
-        this.features = features;
+    public DefaultDataPoint(double[] features, Double label, boolean includeBias) {
+        this.hasBias = includeBias;
+        if (hasBias) {
+            this.features = new double[features.length + 1];
+            this.features[0] = 1; // Bias term
+            System.arraycopy(features, 0, this.features, 1, features.length);
+        } else {
+            this.features = features;
+        }
         this.label = label;
     }
 
@@ -78,13 +88,33 @@ public class DefaultDataPoint implements DataPoint {
     }
 
     /**
-     * Returns a string representation of the {@code DefaultDataPoint}.
-     *
-     * @return a string representation of the {@code DefaultDataPoint}, including
-     *         its features.
+     * {@inheritDoc}
      */
+    @Override
+    public Optional<Double> getBias() {
+        return hasBias() ? Optional.of(getEntries()[0]) : Optional.empty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] getNonBias() {
+        int startingIndex = hasBias() ? 1 : 0;
+        return Arrays.copyOfRange(getEntries(), startingIndex, getEntries().length);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasBias() {
+        return this.hasBias;
+    }
+
     @Override
     public String toString() {
         return "DefaultDataPoint: [features=" + Arrays.toString(features) + "]";
     }
+
 }
