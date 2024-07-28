@@ -20,7 +20,7 @@ public class BinaryCrossEntropyLoss implements LossFunction {
     }
 
     @Override
-    public double derivativeLoss(double trueLabel, double predictedLabel) {
+    public double deriveLoss(double trueLabel, double predictedLabel) {
         double derivedValue = - ((trueLabel/predictedLabel) - ((1-trueLabel)/(1-predictedLabel)));
         log.debug("The derived loss of trueLabel {} with perdictedLabel {} is calculated as {}", trueLabel, predictedLabel, derivedValue);
         return derivedValue;

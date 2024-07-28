@@ -9,8 +9,6 @@ import de.schaack.ml.basics.functions.initialisation.implementation.ZeroWeightsI
 import de.schaack.ml.basics.functions.initialisation.interfaces.InitialisationFunction;
 import de.schaack.ml.basics.functions.loader.interfaces.DataLoaderInterface;
 import de.schaack.ml.basics.functions.loss.interfaces.LossFunction;
-import de.schaack.ml.basics.functions.optimizer.implementation.StochasticGradientDescent;
-import de.schaack.ml.basics.functions.optimizer.interfaces.OptimiserFunction;
 import de.schaack.ml.basics.models.interfaces.Model;
 
 //R - Return class of the Model
@@ -18,10 +16,15 @@ public class SingleModelPipeline<R> {
 
     private Model<R> model;
     private DataLoaderInterface dataLoader;
-    private OptimiserFunction optimiserFunction = new StochasticGradientDescent(0.1);
     private InitialisationFunction initialisationFunction = new ZeroWeightsInitialisation();
     private LossFunction lossFunction;
     private EvaluationFunction evaluationFunction;
+
+    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction) {
+        this.model = model;
+        this.dataLoader = dataLoader;
+        this.lossFunction = lossFunction;
+    }
 
     public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
             EvaluationFunction evaluationFunction) {
@@ -32,25 +35,16 @@ public class SingleModelPipeline<R> {
     }
 
     public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
-            EvaluationFunction evaluationFunction,
-            OptimiserFunction optimiserFunction) {
-        this(model, dataLoader, lossFunction, evaluationFunction);
-        this.optimiserFunction = optimiserFunction;
-    }
-
-    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
-            EvaluationFunction evaluationFunction,
             InitialisationFunction initialisationFunction) {
-        this(model, dataLoader, lossFunction, evaluationFunction);
+        this(model, dataLoader, lossFunction);
         this.initialisationFunction = initialisationFunction;
     }
 
     public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
             EvaluationFunction evaluationFunction,
-            OptimiserFunction optimiserFunction,
             InitialisationFunction initialisationFunction) {
-        this(model, dataLoader, lossFunction, evaluationFunction);
-        this.optimiserFunction = optimiserFunction;
+        this(model, dataLoader, lossFunction);
+        this.evaluationFunction = evaluationFunction;
         this.initialisationFunction = initialisationFunction;
     }
 
@@ -58,61 +52,61 @@ public class SingleModelPipeline<R> {
         return this.model;
     }
 
-    public DataLoaderInterface getDataLoaderInterface() {
-        return this.dataLoader;
-    }
-
-    public OptimiserFunction getOptimiserFunction() {
-        return this.optimiserFunction;
-    }
-
-    public InitialisationFunction getInitialisationFunction() {
-        return this.initialisationFunction;
-    }
-
-    public LossFunction getLossFunction() {
-        return this.lossFunction;
-    }
-
-    public EvaluationFunction getEvaluationFunction() {
-        return this.evaluationFunction;
-    }
-
     public void train(DataSet dataSet) {
         if (!this.getModel().isInitialised())
-            this.getModel().initialiseParameters(initialisationFunction.initializeWeights(dataSet.getDataPoint(0).getEntries().length));
+            this.getModel().initialiseParameters(
+                    initialisationFunction.initializeWeights(dataSet.getDataPoint(0).getEntries().length));
 
         dataLoader.setDataToIterate(dataSet);
 
         while (dataLoader.hasNext()) {
             DataSet batchDataSet = dataLoader.getBatch(dataLoader.getBatchNumber());
-            IntStream.range(0, batchDataSet.getNumberOfDataPoints())
+            double[][] result = IntStream.range(0, batchDataSet.getNumberOfDataPoints())
                     .parallel()
-                    .forEach(i -> trainSingleDatapoint(batchDataSet.getDataPoint(i)));
+                    .mapToObj(i -> trainSingleDatapoint(batchDataSet.getDataPoint(i)))
+                    .toArray(double[][]::new);
+            double[] sumOfGradients = calculateSumOfGradients(result);
+            model.updateParameters(sumOfGradients, dataLoader.getBatchSize());
         }
     }
 
-    private void trainSingleDatapoint(DataPoint currentDataPoint) {
+    private double[] trainSingleDatapoint(DataPoint currentDataPoint) {
         double activatedSumOfProducts = model.feedForward(currentDataPoint);
-        double loss = lossFunction.calculateLoss(currentDataPoint.getLabel(), activatedSumOfProducts);
+        // debug
+        lossFunction.calculateLoss(currentDataPoint.getLabel(), activatedSumOfProducts);
 
-        double lossDerivative = lossFunction.derivativeLoss(currentDataPoint.getLabel(),
+        double lossDerivative = lossFunction.deriveLoss(currentDataPoint.getLabel(),
                 activatedSumOfProducts);
-        double activatedSumOfProductsDerivative = model.getModelSettings()
-                .getActivationFunction()
-                .derivative(activatedSumOfProducts);
-        double[] weightDerivatives = currentDataPoint.getNonBias();
-        IntStream.range(0, weightDerivatives.length - 1)
-                .parallel()
-                .forEach(i -> updateWeight(model, i, lossDerivative, activatedSumOfProductsDerivative,
-                        weightDerivatives[i]));
+        return model.backPropagate(currentDataPoint, lossDerivative);
     }
 
-    private void updateWeight(Model<R> model, int i, double... derivatives) {
-        double gradient = 1.0;
-        for (double d : derivatives) {
-            gradient *= d;
+    /**
+     * Calculates the sum of gradients from an array of gradient arrays.
+     *
+     * @param arrayOfGradientArrays An array of double arrays, where each double
+     *                              array represents a set of gradients. All double
+     *                              arrays must have the same length.
+     * @return A double array representing the sum of the gradients.
+     *         If the input array is empty or any of the sub-arrays has different
+     *         lengths, an empty array is returned.
+     */
+    private double[] calculateSumOfGradients(double[][] arrayOfGradientArrays) {
+        if (arrayOfGradientArrays.length == 0 || arrayOfGradientArrays[0].length == 0) {
+            return new double[0];
         }
-        model.updateWeight(i, optimiserFunction.calculateUpdate(model.getParameters()[i + 1], gradient));
+
+        int length = arrayOfGradientArrays[0].length;
+        double[] sumOfGradients = new double[length];
+
+        for (double[] gradientArray : arrayOfGradientArrays) {
+            if (gradientArray.length != length)
+                throw new IllegalArgumentException("All arrays must have the same length");
+
+            for (int i = 0; i < length; i++) {
+                sumOfGradients[i] += gradientArray[i];
+            }
+        }
+
+        return sumOfGradients;
     }
 }

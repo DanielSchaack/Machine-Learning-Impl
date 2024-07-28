@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.9] 2024-07-27
+### ADDED
+### CHANGED
+- SingleModelPipeline (should) properly calculates the gradient of the batch
+    - Moved Optimizer back into ModelSettigns
+- Renamed some of the derivative functions
+- Logging messages now include method name and line number (also fixed PARSER_ERROR by renaming log to logger?)
+### TODO
+- EvaluationFunction
+    - Implementation for BinaryClasification
+    - Use inside SingleModelPipeline
+- Unit tests
+- Documentation
+- Gaussian Distribution function
+    - Logic to draw values from the gaussian distribution
+- Perceptron example for XOR, see PerceptronXorModel.java
+- Xavier-Initialisation
+- He-Initialisation
+- Refactor Model, ModelSettings?
+
 ## [0.0.8] 2024-07-27
 ### ADDED
 - Optimiser interfaces
@@ -17,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DefaultDataLoader as an implementation
 - SingleModelPipeline as the foundation of training a model
     - Perceptron Implementation
-
 ### CHANGED
 - Default for flushing the logs set to false
 - Changed individual predicts from Model interfaces into a generic in the parent interface

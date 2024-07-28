@@ -5,16 +5,12 @@ import de.schaack.ml.basics.data.interfaces.DataSet;
 import de.schaack.ml.basics.settings.model.interfaces.ModelSettings;
 
 public interface Model<R> {
-    
+
     double feedForward(DataPoint dataPoint);
 
-    double[] feedForward(DataSet trainingDataSet);
+    double[] backPropagate(DataPoint currentDataPoint, double outputOfPreviousComponent);
 
-    void backPropagate(double outputOfPreviousComponent);
-
-    void updateParameter(int index, double value);
-
-    void updateWeight(int index, double value);
+    void updateParameters(double[] sumOfParameterGradients, int batchSize);
 
     R predict(DataPoint dataPoint);
 

@@ -17,9 +17,8 @@ public class SigmoidActivation implements ActivationFunction {
     }
 
     @Override
-    public double derivative(double value) {
+    public double deriveActivation(double value) {
         double derivedValue = activate(value) * (1 - activate(value));
-        
         log.debug("The input {} is derived to: {}", value, derivedValue);
         return derivedValue;
     }

@@ -4,8 +4,14 @@ import de.schaack.ml.basics.data.interfaces.DataSet;
 
 public interface DataLoaderInterface {
     void setDataToIterate(DataSet dataSet);
+
     void setBatchSize(int batchSize);
+
+    int getBatchSize();
+
     int getBatchNumber();
+
     DataSet getBatch(int batchNumber);
+
     boolean hasNext();
 }

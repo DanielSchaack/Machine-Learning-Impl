@@ -24,6 +24,11 @@ public class DefaultDataLoader implements DataLoaderInterface {
     }
 
     @Override
+    public int getBatchSize() {
+        return this.batchSize;
+    }
+
+    @Override
     public DataSet getBatch(int batchNumber) {
         currentBatch = batchNumber + 1;
         int upperBatchNumber = (currentBatch * batchSize > dataSet.getNumberOfDataPoints())

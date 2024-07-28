@@ -13,6 +13,9 @@ public class Perceptron implements Model<Double> {
 
     private PerceptronModelSettings perceptronModelSettings;
     private double[] parameters;
+    private double[] currentParameterGradients;
+    private double currentSumOfProducts = 0;
+
     private boolean isInitialised = false;
 
     public Perceptron() {
@@ -29,34 +32,27 @@ public class Perceptron implements Model<Double> {
             throw new IllegalArgumentException("Weights and dataPoint are not of equal size.");
 
         double matMulResult = MatrixOperations.valuesMulData(getParameters(), dataPoint);
-        return perceptronModelSettings.getActivationFunction().activate(matMulResult);
+        this.currentSumOfProducts = perceptronModelSettings.getActivationFunction().activate(matMulResult);
+        return this.currentSumOfProducts;
     }
 
     @Override
-    public double[] feedForward(DataSet trainingDataSet) {
-        if (!isInitialised()) {
-            throw new IllegalStateException("This model is not yet initialised.");
+    public double[] backPropagate(DataPoint currentDataPoint, double outputOfPreviousComponent) {
+        double activatedSumOfProductsDerivative = getModelSettings()
+                .getActivationFunction()
+                .deriveActivation(this.currentSumOfProducts);
+        double[] parameterDerivatives = currentDataPoint.getEntries();
+        this.currentParameterGradients = MatrixOperations
+                .valuesMulValue(parameterDerivatives, activatedSumOfProductsDerivative * outputOfPreviousComponent);
+        return this.currentParameterGradients;
+    }
+
+    @Override
+    public void updateParameters(double[] sumOfParameterGradients, int batchSize) {
+        for (int i = 0; i < getParameters().length; i++) {
+            this.parameters[i] = getModelSettings().getOptimiserFunction().calculateUpdate(this.parameters[i],
+                    batchSize, currentParameterGradients[i]);
         }
-        return IntStream.range(0, trainingDataSet.getDataPoints().length)
-                .parallel()
-                .mapToDouble(i -> MatrixOperations.valuesMulData(this.parameters, trainingDataSet.getDataPoints()[i]))
-                .toArray();
-    }
-
-    @Override
-    public void backPropagate(double outputOfPreviousComponent) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'backPropagate'");
-    }
-
-    @Override
-    public void updateParameter(int index, double value) {
-        this.parameters[index] = value;
-    }
-
-    @Override
-    public void updateWeight(int index, double value) {
-        updateParameter(index + 1, value);
     }
 
     /**
@@ -116,6 +112,7 @@ public class Perceptron implements Model<Double> {
                     "Initiation parameters don't match the size of the available parameters");
 
         this.parameters = initiationParameters;
+        this.currentParameterGradients = new double[parameters.length];
         this.isInitialised = true;
         return getParameters();
     }
