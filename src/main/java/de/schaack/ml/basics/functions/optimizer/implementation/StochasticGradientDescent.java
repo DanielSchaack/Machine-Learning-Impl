@@ -40,7 +40,7 @@ public class StochasticGradientDescent implements OptimiserFunction {
         double newValue = valueOld - update;
         log.debug(
                 "The old value {} recieves the update {} based on the gradient {} from a batch of size {}, resulting in the new value {}",
-                valueOld, gradient, batchSize, update, newValue);
+                valueOld, update, gradient, batchSize, newValue);
         return newValue;
     }
 

@@ -1,20 +1,26 @@
 package de.schaack.ml.basics.functions.loader.implementation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.schaack.ml.basics.data.interfaces.DataPoint;
 import de.schaack.ml.basics.data.interfaces.DataSet;
 import de.schaack.ml.basics.functions.loader.interfaces.DataLoaderInterface;
 
 public class DefaultDataLoader implements DataLoaderInterface {
 
-    private DataSet dataSet;
+    private static final Logger log = LoggerFactory.getLogger(DefaultDataLoader.class);
+
+    private DataSet<? extends DataPoint> dataSet;
     private int batchSize = 0;
-    private int currentBatch = 0;
+    private int currentBatch = 1;
 
     public DefaultDataLoader(int batchSize) {
         setBatchSize(batchSize);
     }
 
     @Override
-    public void setDataToIterate(DataSet dataSet) {
+    public <S extends DataSet<? extends DataPoint>> void setDataToIterate(S dataSet) {
         this.dataSet = dataSet;
     }
 
@@ -28,13 +34,14 @@ public class DefaultDataLoader implements DataLoaderInterface {
         return this.batchSize;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public DataSet getBatch(int batchNumber) {
-        currentBatch = batchNumber + 1;
-        int upperBatchNumber = (currentBatch * batchSize > dataSet.getNumberOfDataPoints())
+    public <S extends DataSet<? extends DataPoint>> S getBatch() {
+        int lowerBatchNumber = (currentBatch++) * batchSize;
+        int upperBatchNumber = ((currentBatch) * batchSize > dataSet.getNumberOfDataPoints())
                 ? dataSet.getNumberOfDataPoints()
                 : currentBatch * batchSize;
-        return dataSet.subset(batchNumber * batchSize, upperBatchNumber);
+        return (S) dataSet.subset(lowerBatchNumber, upperBatchNumber);
     }
 
     @Override
@@ -42,8 +49,16 @@ public class DefaultDataLoader implements DataLoaderInterface {
         return currentBatch;
     }
 
+    // TODO:
+    // last batch isn't calculated
+    // This dataSet (40) at currentBatch 40 with batchSize 1 (40) has next: true
+    // java.lang.IllegalArgumentException: dataPoints must not be empty.
     @Override
     public boolean hasNext() {
-        return currentBatch * batchSize >= dataSet.getNumberOfFeatures();
+        boolean hasNext = currentBatch * batchSize < dataSet.getNumberOfDataPoints();
+        log.debug("This dataSet ({}) at currentBatch {} with batchSize {} ({}) has next: {}",
+                dataSet.getNumberOfDataPoints(), currentBatch, batchSize,
+                currentBatch * batchSize, hasNext);
+        return hasNext;
     }
 }

@@ -6,19 +6,19 @@ import de.schaack.ml.basics.settings.model.interfaces.ModelSettings;
 
 public interface Model<R> {
 
-    double feedForward(DataPoint dataPoint);
+    <P extends DataPoint> double feedForward(P dataPoint);
 
-    double[] backPropagate(DataPoint currentDataPoint, double outputOfPreviousComponent);
+    <P extends DataPoint> double[] backPropagate(P currentDataPoint, double outputOfPreviousComponent);
 
     void updateParameters(double[] sumOfParameterGradients, int batchSize);
 
-    R predict(DataPoint dataPoint);
+    <P extends DataPoint> R predict(P dataPoint);
 
-    R[] predictions(DataPoint[] dataPoints);
+    <P extends DataPoint> R[] predictions(P[] dataPoints);
 
-    R[] predictions(DataSet dataSet);
+    <S extends DataSet<? extends DataPoint>> R[] predictions(S dataSet);
 
-    ModelSettings getModelSettings();
+    <M extends ModelSettings> M getModelSettings();
 
     double[] getParameters();
 

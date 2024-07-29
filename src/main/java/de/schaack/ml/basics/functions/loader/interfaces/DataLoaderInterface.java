@@ -1,9 +1,10 @@
 package de.schaack.ml.basics.functions.loader.interfaces;
 
+import de.schaack.ml.basics.data.interfaces.DataPoint;
 import de.schaack.ml.basics.data.interfaces.DataSet;
 
 public interface DataLoaderInterface {
-    void setDataToIterate(DataSet dataSet);
+    <S extends DataSet<? extends DataPoint>> void setDataToIterate(S dataSet);
 
     void setBatchSize(int batchSize);
 
@@ -11,7 +12,7 @@ public interface DataLoaderInterface {
 
     int getBatchNumber();
 
-    DataSet getBatch(int batchNumber);
+    <S extends DataSet<? extends DataPoint>> S getBatch();
 
     boolean hasNext();
 }

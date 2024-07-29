@@ -1,5 +1,7 @@
 package de.schaack.ml.basics.settings.model.interfaces;
 
+import de.schaack.ml.basics.data.interfaces.DataPreprocessor;
+import de.schaack.ml.basics.data.interfaces.DataSplitter;
 import de.schaack.ml.basics.functions.activation.interfaces.ActivationFunction;
 
 /**
@@ -22,6 +24,21 @@ public interface ModelSettings {
      * @return the activation function.
      */
     ActivationFunction getActivationFunction();
+
+    /**
+     * Sets the dataPreprocessor for the model.
+     *
+     * @param dataPreprocessor the dataPreprocessor to be set.
+     * @return the updated {@link ModelSettings} object.
+     */
+    ModelSettings setDataPreprocessor(DataPreprocessor dataPreprocessor);
+
+    /**
+     * Retrieves the preprocessor for the model.
+     *
+     * @return the preprocessor.
+     */
+    DataPreprocessor getDataPreprocessor();
 
     /**
      * Retrieves the amount of epochs during training of the model.

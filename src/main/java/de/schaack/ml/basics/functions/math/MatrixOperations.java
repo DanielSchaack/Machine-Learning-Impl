@@ -2,7 +2,6 @@ package de.schaack.ml.basics.functions.math;
 
 import java.util.stream.IntStream;
 
-
 import de.schaack.ml.basics.data.interfaces.DataPoint;
 
 public class MatrixOperations {

@@ -70,5 +70,5 @@ public interface DataColumn {
      *
      * @return a {@link Statistics} object containing statistical information about the data column.
      */
-    Statistics getStatistics();
+    <T extends Statistics> T getStatistics();
 }

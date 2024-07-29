@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.10] 2024-07-29
+### ADDED
+- Gaussian Distribution function
+    - Logic to draw values from the gaussian distribution
+- Perceptron example for AND, see PerceptronNandModel.java
+    - XChart for plotting the result
+- Implementation of Training-Test(-Validation) - Splitter
+- Implementation of Normaliser
+- ReLU-Activation
+- Xavier-Initialisation
+- He-Initialisation
+- Some Unit tests
+### CHANGED
+- Interfaces and their default implementations include more generics to make them more reuseable... i think? 
+### TODO
+1. EvaluationFunction
+    1. Implementation for BinaryClasification
+    2. Use inside SingleModelPipeline
+3. stopping condition? 
+    1. Use loss on validation-dataset?
+    2. Use Epochs
+4. Adjust Perceptron for variably sized outputOfPreviousComponent (Layer-to-Layer)
+5. New Pipeline for 
+6. Unit tests
+7. proper Documentation
+8. Refactor Model, ModelSettings?
+9. Refactor into using Virtual Threads (JDK 21-feature)?
+10. Debug-Logging in DataSplitter and Datapreprocessor
+11. Fix logback not grabbing properties-Settings
+
+
 ## [0.0.9] 2024-07-28
 ### CHANGED
 - SingleModelPipeline (should) properly calculates the gradient of the batch

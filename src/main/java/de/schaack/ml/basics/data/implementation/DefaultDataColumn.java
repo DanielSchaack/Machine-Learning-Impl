@@ -152,8 +152,9 @@ public class DefaultDataColumn implements DataColumn {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public Statistics getStatistics() {
-        return new DefaultStatistics(features);
+    public <T extends Statistics> T getStatistics() {
+        return (T) new DefaultStatistics(features);
     }
 }

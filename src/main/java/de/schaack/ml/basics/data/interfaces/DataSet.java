@@ -6,7 +6,7 @@ import java.util.Random;
  * Represents a collection of data points and provides various methods to access
  * and manipulate the data.
  */
-public interface DataSet extends Iterable<DataPoint> {
+public interface DataSet<T extends DataPoint> extends Iterable<T> {
 
     /**
      * Retrieves the number of features in the dataset.
@@ -27,7 +27,7 @@ public interface DataSet extends Iterable<DataPoint> {
      *
      * @return an array of {@link DataPoint} objects.
      */
-    DataPoint[] getDataPoints();
+    T[] getDataPoints();
 
     /**
      * Retrieves the data point at the specified index.
@@ -35,7 +35,7 @@ public interface DataSet extends Iterable<DataPoint> {
      * @param index the index of the data point to retrieve.
      * @return the {@link DataPoint} at the specified index.
      */
-    DataPoint getDataPoint(int index);
+    T getDataPoint(int index);
 
     /**
      * Retrieves the data column at the specified index.
@@ -65,7 +65,7 @@ public interface DataSet extends Iterable<DataPoint> {
      *
      * @return the adjusted DataSet
      */
-    DataSet setHasLabels(boolean hasLabels);
+    DataSet<T> setHasLabels(boolean hasLabels);
 
     /**
      * Retrieves all labels in the dataset as a double[].
@@ -110,7 +110,7 @@ public interface DataSet extends Iterable<DataPoint> {
      * @param indices an array of indices for the data points to retrieve.
      * @return a new {@link DataSet} containing the subset of data points.
      */
-    DataSet subset(Integer[] indices);
+    DataSet<T> subset(Integer[] indices);
 
     /**
      * Retrieves a subset of the dataset from the specified beginning index
@@ -120,7 +120,7 @@ public interface DataSet extends Iterable<DataPoint> {
      * @param indexEnd       the end index (exclusive).
      * @return a new {@link DataSet} containing the subset of data points.
      */
-    DataSet subset(int indexBeginning, int indexEnd);
+    DataSet<T> subset(int indexBeginning, int indexEnd);
 
     /**
      * Shuffles the data points in the dataset using the specified random number
@@ -129,4 +129,10 @@ public interface DataSet extends Iterable<DataPoint> {
      * @param random the random number generator to use for shuffling.
      */
     void shuffle(Random random);
+
+    /**
+     * Shuffles the data points in the dataset using a new random number
+     * generator.
+     */
+    void shuffle();
 }

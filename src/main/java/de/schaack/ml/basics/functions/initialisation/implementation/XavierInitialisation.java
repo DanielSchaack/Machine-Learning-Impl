@@ -3,11 +3,12 @@ package de.schaack.ml.basics.functions.initialisation.implementation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.schaack.ml.basics.functions.distribution.GaussianDistribution;
 import de.schaack.ml.basics.functions.initialisation.interfaces.InitialisationFunction;
 
-public class ZeroWeightsInitialisation implements InitialisationFunction {
+public class XavierInitialisation implements InitialisationFunction {
 
-    private static final Logger log = LoggerFactory.getLogger(ZeroWeightsInitialisation.class);
+    private static final Logger log = LoggerFactory.getLogger(XavierInitialisation.class);
 
     @Override
     public double[] initializeWeights(int size) {
@@ -15,6 +16,10 @@ public class ZeroWeightsInitialisation implements InitialisationFunction {
             throw new IllegalArgumentException("Size must be positive");
 
         double[] initParameters = new double[size];
+        for (int i = 0; i < initParameters.length; i++) {
+            initParameters[i] = GaussianDistribution.generateGaussian(0, 1.0 / size);
+        }
+
         log.debug("Parameters initialised as: {}", initParameters);
         return initParameters;
     }

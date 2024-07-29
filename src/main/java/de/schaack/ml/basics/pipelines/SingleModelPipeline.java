@@ -2,6 +2,9 @@ package de.schaack.ml.basics.pipelines;
 
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.schaack.ml.basics.data.interfaces.DataPoint;
 import de.schaack.ml.basics.data.interfaces.DataSet;
 import de.schaack.ml.basics.functions.evaluation.interfaces.EvaluationFunction;
@@ -14,11 +17,14 @@ import de.schaack.ml.basics.models.interfaces.Model;
 //R - Return class of the Model
 public class SingleModelPipeline<R> {
 
+    private static final Logger log = LoggerFactory.getLogger(SingleModelPipeline.class);
+
     private Model<R> model;
     private DataLoaderInterface dataLoader;
     private InitialisationFunction initialisationFunction = new ZeroWeightsInitialisation();
     private LossFunction lossFunction;
     private EvaluationFunction evaluationFunction;
+    
 
     public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction) {
         this.model = model;
@@ -52,15 +58,16 @@ public class SingleModelPipeline<R> {
         return this.model;
     }
 
-    public void train(DataSet dataSet) {
+    // TODO
+    public<S extends DataSet<? extends DataPoint>> void train(S trainSet, S testSet) {
         if (!this.getModel().isInitialised())
             this.getModel().initialiseParameters(
-                    initialisationFunction.initializeWeights(dataSet.getDataPoint(0).getEntries().length));
+                    initialisationFunction.initializeWeights(trainSet.getDataPoint(0).getEntries().length));
 
-        dataLoader.setDataToIterate(dataSet);
+        dataLoader.setDataToIterate(trainSet);
 
         while (dataLoader.hasNext()) {
-            DataSet batchDataSet = dataLoader.getBatch(dataLoader.getBatchNumber());
+            S batchDataSet = dataLoader.getBatch();
             double[][] result = IntStream.range(0, batchDataSet.getNumberOfDataPoints())
                     .parallel()
                     .mapToObj(i -> trainSingleDatapoint(batchDataSet.getDataPoint(i)))
@@ -73,7 +80,7 @@ public class SingleModelPipeline<R> {
     private double[] trainSingleDatapoint(DataPoint currentDataPoint) {
         double activatedSumOfProducts = model.feedForward(currentDataPoint);
         // debug
-        lossFunction.calculateLoss(currentDataPoint.getLabel(), activatedSumOfProducts);
+        //lossFunction.calculateLoss(currentDataPoint.getLabel(), activatedSumOfProducts);
 
         double lossDerivative = lossFunction.deriveLoss(currentDataPoint.getLabel(),
                 activatedSumOfProducts);
@@ -107,6 +114,7 @@ public class SingleModelPipeline<R> {
             }
         }
 
+        log.debug("The sum of all Gradients is: {}", sumOfGradients);
         return sumOfGradients;
     }
 }

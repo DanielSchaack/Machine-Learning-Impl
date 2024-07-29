@@ -6,7 +6,7 @@
     
     <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
     
-    <property name="LOG_LEVEL" value="${logging.level:-INFO}"/>
+    <property name="LOG_LEVEL" value="${logging.level}"/>
     <property name="FILE_FLUSH" value="${logging.file.immediate-flush:-false}"/>
     <property name="FILE_APPEND" value="${logging.file.append:-true}"/>
 

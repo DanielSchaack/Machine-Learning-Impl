@@ -9,20 +9,27 @@ import de.schaack.ml.basics.functions.loss.interfaces.LossFunction;
 
 public class BinaryCrossEntropyLoss implements LossFunction {
 
-    
     private static final Logger log = LoggerFactory.getLogger(BinaryCrossEntropyLoss.class);
 
     @Override
     public double calculateLoss(double trueLabel, double predictedLabel) throws IllegalArgumentException {
-        double loss = (-trueLabel * Math.log(predictedLabel)) - (1 - trueLabel * Math.log(1 - predictedLabel));
-        log.debug("The loss of trueLabel {} with perdictedLabel {} is calculated as {}", trueLabel, predictedLabel, loss);
-        return loss ;
+        if (predictedLabel <= 0.0 || predictedLabel >= 1.0)
+            throw new IllegalArgumentException("PredictedLabel must be within 0 and 1: " + predictedLabel);
+
+        double loss = -(trueLabel * Math.log(predictedLabel)) - (1 - trueLabel * Math.log(1 - predictedLabel));
+        log.debug("The loss of trueLabel {} with predictedLabel {} is calculated as {}", trueLabel, predictedLabel,
+                loss);
+        return loss;
     }
 
     @Override
     public double deriveLoss(double trueLabel, double predictedLabel) {
-        double derivedValue = - ((trueLabel/predictedLabel) - ((1-trueLabel)/(1-predictedLabel)));
-        log.debug("The derived loss of trueLabel {} with perdictedLabel {} is calculated as {}", trueLabel, predictedLabel, derivedValue);
+        if (predictedLabel <= 0.0 || predictedLabel >= 1.0)
+            throw new IllegalArgumentException("PredictedLabel must be within 0 and 1: " + predictedLabel);
+
+        double derivedValue = -((trueLabel / predictedLabel) - ((1 - trueLabel) / (1 - predictedLabel)));
+        log.debug("The derived loss of trueLabel {} with predictedLabel {} is calculated as {}", trueLabel,
+                predictedLabel, derivedValue);
         return derivedValue;
     }
 

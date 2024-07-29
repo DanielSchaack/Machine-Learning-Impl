@@ -13,7 +13,7 @@ import de.schaack.ml.basics.data.interfaces.DataSet;
 /**
  * A default implementation of the {@link DataSet} interface.
  */
-public class DefaultDataSet implements DataSet {
+public class DefaultDataSet implements DataSet<DataPoint> {
 
     private final String[] attributeNames;
     private final String[] attributeDescriptions;
@@ -28,8 +28,20 @@ public class DefaultDataSet implements DataSet {
      *
      * @param dataPoints a collection of {@link DataPoint} objects.
      */
-    public DefaultDataSet(Collection<DataPoint> dataPoints) {
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints) {
         this(dataPoints, null, null, false);
+    }
+
+    /**
+     * Constructs a {@code DefaultDataSet} with the specified data points and no
+     * attribute metadata or labels.
+     *
+     * @param dataPoints a collection of {@link DataPoint} objects.
+     * @param hasLabels  a boolean flag indicating whether the dataset contains
+     *                   labels.
+     */
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints, boolean hasLabel) {
+        this(dataPoints, null, null, hasLabel);
     }
 
     /**
@@ -41,7 +53,7 @@ public class DefaultDataSet implements DataSet {
      *                       {@code null}.
      * @throws IllegalArgumentException if the input is invalid.
      */
-    public DefaultDataSet(Collection<DataPoint> dataPoints, Collection<String> attributeNames)
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints, Collection<String> attributeNames)
             throws IllegalArgumentException {
         this(dataPoints, attributeNames, null, false);
     }
@@ -57,7 +69,8 @@ public class DefaultDataSet implements DataSet {
      *                       labels.
      * @throws IllegalArgumentException if the input is invalid.
      */
-    public DefaultDataSet(Collection<DataPoint> dataPoints, Collection<String> attributeNames, boolean hasLabels)
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints, Collection<String> attributeNames,
+            boolean hasLabels)
             throws IllegalArgumentException {
         this(dataPoints, attributeNames, null, hasLabels);
     }
@@ -73,7 +86,7 @@ public class DefaultDataSet implements DataSet {
      *                              can be {@code null}.
      * @throws IllegalArgumentException if the input is invalid.
      */
-    public DefaultDataSet(Collection<DataPoint> dataPoints, Collection<String> attributeNames,
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints, Collection<String> attributeNames,
             Collection<String> attributeDescriptions) throws IllegalArgumentException {
         this(dataPoints, attributeNames, attributeDescriptions, false);
     }
@@ -91,7 +104,7 @@ public class DefaultDataSet implements DataSet {
      *                              contains labels.
      * @throws IllegalArgumentException if the input is invalid.
      */
-    public DefaultDataSet(Collection<DataPoint> dataPoints, Collection<String> attributeNames,
+    public DefaultDataSet(Collection<? extends DataPoint> dataPoints, Collection<String> attributeNames,
             Collection<String> attributeDescriptions, boolean hasLabels)
             throws IllegalArgumentException {
         if (dataPoints.isEmpty()) {
@@ -107,9 +120,7 @@ public class DefaultDataSet implements DataSet {
         this.numberOfFeatures = this.dataPoints[0].getEntries().length;
         this.hasLabels = hasLabels;
 
-        if ((attributeNames != null && attributeDescriptions != null)
-                && (attributeDescriptions.size() != attributeNames.size())
-                || attributeNames.size() != numberOfFeatures) {
+        if (haveAttributesCorrectSize(attributeNames, attributeDescriptions, numberOfFeatures)) {
             throw new IllegalArgumentException(
                     "Invalid input: names must not be null, descriptions length must match names length, and they must all have the same number of entries as the number of features.");
         }
@@ -124,13 +135,40 @@ public class DefaultDataSet implements DataSet {
     }
 
     /**
+     * Checks if the given collections are non-null and have matching sizes or match
+     * the expected number of features.
+     *
+     * @param attributeNames        Collection of attribute names (can be null).
+     * @param attributeDescriptions Collection of attribute descriptions (can be
+     *                              null).
+     * @param numberOfFeatures      Expected number of features.
+     * @return true if one of the following conditions is met:
+     *         <p>
+     *         - Both name and description collections are non-null but have
+     *         different sizes.
+     *         <p>
+     *         - The size of the name collection does not match the number of
+     *         features.
+     *         <p>
+     *         - The size of the description collection does not match the number of
+     *         features.
+     */
+    private boolean haveAttributesCorrectSize(Collection<String> attributeNames,
+            Collection<String> attributeDescriptions, int numberOfFeatures) {
+        return (attributeNames != null && attributeDescriptions != null &&
+                attributeDescriptions.size() != attributeNames.size()) ||
+                (attributeNames != null && attributeNames.size() != numberOfFeatures) ||
+                (attributeDescriptions != null && attributeDescriptions.size() != numberOfFeatures);
+    }
+
+    /**
      * Checks if all data points have the same number of features.
      *
      * @param dataPoints a collection of {@link DataPoint} objects.
      * @return <code>true</code> if all data points have the same number of
      *         features; <code>false</code> otherwise.
      */
-    public boolean isDataPointSizeUniversal(Collection<DataPoint> dataPoints) {
+    public boolean isDataPointSizeUniversal(Collection<? extends DataPoint> dataPoints) {
         int firstDataRowSize = dataPoints.iterator().next().getEntries().length;
         return dataPoints.stream().allMatch(dataPoint -> dataPoint.getEntries().length == firstDataRowSize);
     }
@@ -210,7 +248,7 @@ public class DefaultDataSet implements DataSet {
      * {@inheritDoc}
      */
     @Override
-    public DataSet setHasLabels(boolean hasLabels) {
+    public DefaultDataSet setHasLabels(boolean hasLabels) {
         this.hasLabels = hasLabels;
         return this;
     }
@@ -268,15 +306,15 @@ public class DefaultDataSet implements DataSet {
      * {@inheritDoc}
      */
     @Override
-    public DataSet subset(Integer[] indices) {
+    public DefaultDataSet subset(Integer[] indices) {
         DataPoint[] subsetDataPoints = new DataPoint[indices.length];
         for (int i = 0; i < indices.length; i++) {
             subsetDataPoints[i] = getDataPoint(indices[i]);
         }
         return new DefaultDataSet(
                 Arrays.asList(subsetDataPoints),
-                Arrays.asList(attributeNames),
-                Arrays.asList(attributeDescriptions),
+                attributeNames.length == 0 ? null : Arrays.asList(attributeNames),
+                attributeDescriptions.length == 0 ? null : Arrays.asList(attributeDescriptions),
                 hasLabels);
     }
 
@@ -288,17 +326,18 @@ public class DefaultDataSet implements DataSet {
      * @throws IndexOutOfBoundsException if the end index is out of range.
      */
     @Override
-    public DataSet subset(int indexBeginning, int indexEnd) throws IllegalArgumentException, IndexOutOfBoundsException {
+    public DefaultDataSet subset(int indexBeginning, int indexEnd)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
         if (indexEnd < indexBeginning) {
             throw new IllegalArgumentException("The beginning index must be smaller than the ending index.");
         }
-        if (indexBeginning < 0 || indexEnd < 0 || indexEnd >= getNumberOfDataPoints()) {
+        if (indexBeginning < 0 || indexEnd < 0 || indexEnd > getNumberOfDataPoints()) {
             throw new IndexOutOfBoundsException("Indices are out of range.");
         }
         return new DefaultDataSet(
                 Arrays.asList(Arrays.copyOfRange(getDataPoints(), indexBeginning, indexEnd)),
-                Arrays.asList(attributeNames),
-                Arrays.asList(attributeDescriptions),
+                attributeNames.length == 0 ? null : Arrays.asList(attributeNames),
+                attributeDescriptions.length == 0 ? null : Arrays.asList(attributeDescriptions),
                 hasLabels);
     }
 
@@ -308,6 +347,14 @@ public class DefaultDataSet implements DataSet {
     @Override
     public void shuffle(Random random) {
         Collections.shuffle(Arrays.asList(dataPoints), random);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shuffle() {
+        Collections.shuffle(Arrays.asList(dataPoints), new Random());
     }
 
     /**

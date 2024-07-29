@@ -11,9 +11,9 @@ public class DefaultStatistics implements Statistics {
 
     private double[] features;
     private int count;
-    private double min = 0;
-    private double max = 0;
-    private double sum = 0;
+    private double min = Double.MAX_VALUE;
+    private double max = Double.MIN_VALUE;
+    private double sum;
 
     /**
      * Constructs a {@code DefaultStatistics} object with the specified features.
@@ -21,7 +21,7 @@ public class DefaultStatistics implements Statistics {
      * @param features an array of double values representing the features.
      */
     public DefaultStatistics(double[] features) {
-        this.features = features.clone();
+        this.features = features;
         this.count = features.length;
         Arrays.sort(this.features);
 
@@ -91,8 +91,8 @@ public class DefaultStatistics implements Statistics {
         if (count == 0 || percents < 0 || percents > 100) {
             throw new IllegalArgumentException("Invalid input");
         }
-        int index = (int) Math.ceil((count * (percents / 100.0)) - 1);
-        return features[Math.min(index, count - 1)];
+        int position = (int)Math.floor((percents / 100.0 * (count - 1)));
+        return features[Math.min(position, count - 1)];
     }
 
     /**
