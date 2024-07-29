@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ADDED
 - Gaussian Distribution function
     - Logic to draw values from the gaussian distribution
-- Perceptron example for AND, see PerceptronNandModel.java
+- Perceptron example for NAND, see PerceptronNandModel.java
     - XChart for plotting the result
 - Implementation of Training-Test(-Validation) - Splitter
 - Implementation of Normaliser
