@@ -24,6 +24,12 @@ public class MatrixOperations {
                 .toArray();
     }
 
+    public static double[] valuesAddValues(double[] aValues, double[] bValues) {
+        return IntStream.range(0, aValues.length)
+                .mapToDouble(i -> aValues[i] + bValues[i])
+                .toArray();
+    }
+
     public static double[] valuesSubValue(double[] values, double value) {
         return IntStream.range(0, values.length)
                 .mapToDouble(i -> values[i] - value)

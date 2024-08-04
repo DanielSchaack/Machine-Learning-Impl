@@ -1,6 +1,7 @@
 package de.schaack.ml.basics.pipelines;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import de.schaack.ml.basics.functions.loss.interfaces.LossFunction;
 import de.schaack.ml.basics.models.interfaces.Model;
 
 //R - Return class of the Model
-public class SingleModelPipeline<R> {
+public class SingleModelPipeline<R extends Number> {
 
     private static final Logger log = LoggerFactory.getLogger(SingleModelPipeline.class);
 
@@ -24,15 +25,19 @@ public class SingleModelPipeline<R> {
     private InitialisationFunction initialisationFunction = new ZeroWeightsInitialisation();
     private LossFunction lossFunction;
     private EvaluationFunction evaluationFunction;
-    
+    private int amountEpochs = 2;
 
-    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction) {
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction) {
         this.model = model;
         this.dataLoader = dataLoader;
         this.lossFunction = lossFunction;
     }
 
-    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
             EvaluationFunction evaluationFunction) {
         this.model = model;
         this.dataLoader = dataLoader;
@@ -40,13 +45,17 @@ public class SingleModelPipeline<R> {
         this.evaluationFunction = evaluationFunction;
     }
 
-    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
             InitialisationFunction initialisationFunction) {
         this(model, dataLoader, lossFunction);
         this.initialisationFunction = initialisationFunction;
     }
 
-    public SingleModelPipeline(Model<R> model, DataLoaderInterface dataLoader, LossFunction lossFunction,
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
             EvaluationFunction evaluationFunction,
             InitialisationFunction initialisationFunction) {
         this(model, dataLoader, lossFunction);
@@ -54,33 +63,74 @@ public class SingleModelPipeline<R> {
         this.initialisationFunction = initialisationFunction;
     }
 
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
+            EvaluationFunction evaluationFunction,
+            int amountEpochs) {
+        this.model = model;
+        this.dataLoader = dataLoader;
+        this.lossFunction = lossFunction;
+        this.evaluationFunction = evaluationFunction;
+        this.amountEpochs = amountEpochs;
+    }
+
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
+            InitialisationFunction initialisationFunction,
+            int amountEpochs) {
+        this.model = model;
+        this.dataLoader = dataLoader;
+        this.initialisationFunction = initialisationFunction;
+        this.lossFunction = lossFunction;
+        this.amountEpochs = amountEpochs;
+    }
+
+    public SingleModelPipeline(Model<R> model,
+            DataLoaderInterface dataLoader,
+            LossFunction lossFunction,
+            EvaluationFunction evaluationFunction,
+            InitialisationFunction initialisationFunction,
+            int amountEpochs) {
+        this.model = model;
+        this.dataLoader = dataLoader;
+        this.initialisationFunction = initialisationFunction;
+        this.lossFunction = lossFunction;
+        this.evaluationFunction = evaluationFunction;
+        this.amountEpochs = amountEpochs;
+    }
+
     public Model<R> getModel() {
         return this.model;
     }
 
-    // TODO
-    public<S extends DataSet<? extends DataPoint>> void train(S trainSet, S testSet) {
+    public <S extends DataSet<? extends DataPoint>> void train(S trainSet, S testSet) {
         if (!this.getModel().isInitialised())
             this.getModel().initialiseParameters(
                     initialisationFunction.initializeWeights(trainSet.getDataPoint(0).getEntries().length));
 
-        dataLoader.setDataToIterate(trainSet);
-
-        while (dataLoader.hasNext()) {
-            S batchDataSet = dataLoader.getBatch();
-            double[][] result = IntStream.range(0, batchDataSet.getNumberOfDataPoints())
-                    .parallel()
-                    .mapToObj(i -> trainSingleDatapoint(batchDataSet.getDataPoint(i)))
-                    .toArray(double[][]::new);
-            double[] sumOfGradients = calculateSumOfGradients(result);
-            model.updateParameters(sumOfGradients, dataLoader.getBatchSize());
+        for (int epoch = 0; epoch < model.getModelSettings().getNumberOfEpochs(); epoch++) {
+            trainSet.shuffle();
+            dataLoader.setDataToIterate(trainSet);
+            while (dataLoader.hasNext()) {
+                DataSet<DataPoint> batchDataSet = dataLoader.getBatch();
+                double[][] result = IntStream.range(0, batchDataSet.getNumberOfDataPoints())
+                        .parallel()
+                        .mapToObj(i -> trainSingleDatapoint(batchDataSet.getDataPoint(i)))
+                        .toArray(double[][]::new);
+                double[] sumOfGradients = calculateSumOfGradients(result);
+                model.updateParameters(sumOfGradients, dataLoader.getBatchSize());
+            }
+            log.info("Epoch {} done", epoch);
         }
     }
 
     private double[] trainSingleDatapoint(DataPoint currentDataPoint) {
         double activatedSumOfProducts = model.feedForward(currentDataPoint);
         // debug
-        //lossFunction.calculateLoss(currentDataPoint.getLabel(), activatedSumOfProducts);
+        // lossFunction.calculateLoss(currentDataPoint.getLabel(),
+        // activatedSumOfProducts);
 
         double lossDerivative = lossFunction.deriveLoss(currentDataPoint.getLabel(),
                 activatedSumOfProducts);
@@ -117,4 +167,35 @@ public class SingleModelPipeline<R> {
         log.debug("The sum of all Gradients is: {}", sumOfGradients);
         return sumOfGradients;
     }
+
+    public SingleModelPipeline<R> setModel(Model<R> model) {
+        this.model = model;
+        return this;
+    }
+
+    public SingleModelPipeline<R> setDataLoader(DataLoaderInterface dataLoader) {
+        this.dataLoader = dataLoader;
+        return this;
+    }
+
+    public SingleModelPipeline<R> setInitialisationFunction(InitialisationFunction initialisationFunction) {
+        this.initialisationFunction = initialisationFunction;
+        return this;
+    }
+
+    public SingleModelPipeline<R> setLossFunction(LossFunction lossFunction) {
+        this.lossFunction = lossFunction;
+        return this;
+    }
+
+    public SingleModelPipeline<R> setEvaluationFunction(EvaluationFunction evaluationFunction) {
+        this.evaluationFunction = evaluationFunction;
+        return this;
+    }
+
+    public SingleModelPipeline<R> setAmountEpochs(int amountEpochs) {
+        this.amountEpochs = amountEpochs;
+        return this;
+    }
+
 }

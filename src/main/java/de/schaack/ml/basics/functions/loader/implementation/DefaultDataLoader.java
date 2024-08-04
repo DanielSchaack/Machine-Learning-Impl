@@ -13,7 +13,7 @@ public class DefaultDataLoader implements DataLoaderInterface {
 
     private DataSet<? extends DataPoint> dataSet;
     private int batchSize = 0;
-    private int currentBatch = 1;
+    private int currentBatch = 0;
 
     public DefaultDataLoader(int batchSize) {
         setBatchSize(batchSize);
@@ -22,6 +22,7 @@ public class DefaultDataLoader implements DataLoaderInterface {
     @Override
     public <S extends DataSet<? extends DataPoint>> void setDataToIterate(S dataSet) {
         this.dataSet = dataSet;
+        currentBatch = 0;
     }
 
     @Override

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.11] 2024-08-04
+### CHANGED
+- Fixed Backpropagation for a single Perceptron
+    - Saving local, current and global gradients in each node
+    - enhanced debug-messages
+- Fixed DefaultDataLoader?
+- Enhanced heatmap by having a variable range 
+- Stopping condition in SingleModelPipeline
+    - Use Epochs
+    
+### TODO
+
+
 ## [0.0.10] 2024-07-29
 ### ADDED
 - Gaussian Distribution function
@@ -27,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     1. Use loss on validation-dataset?
     2. Use Epochs
 4. Adjust Perceptron for variably sized outputOfPreviousComponent (Layer-to-Layer)
-5. New Pipeline for 
+5. New Pipeline for layers?
 6. Unit tests
 7. proper Documentation
 8. Refactor Model, ModelSettings?

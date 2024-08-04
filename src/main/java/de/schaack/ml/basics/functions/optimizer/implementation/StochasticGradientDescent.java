@@ -36,7 +36,7 @@ public class StochasticGradientDescent implements OptimiserFunction {
     // w_t+1 = w_t - learning rate * 1/B * Derivative(Sum_b(Loss_b(w_t)))
     @Override
     public double calculateUpdate(double valueOld, int batchSize, double gradient) {
-        double update = settings.getLearningRate() * (1.0 / batchSize) * gradient;
+        double update = settings.getLearningRate() * gradient;
         double newValue = valueOld - update;
         log.debug(
                 "The old value {} recieves the update {} based on the gradient {} from a batch of size {}, resulting in the new value {}",

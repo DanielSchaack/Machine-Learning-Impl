@@ -11,7 +11,6 @@ public class BasicsApplication {
 
     public static void main(String[] args) {
         log.info("Hello, this is running from the command line!");
-
-        PerceptronNandModel.showExample(25000, 0.2, 0.1, 20);
+        PerceptronNandModel.showExample(10, 0., 0.1, 1, 10);
     }
 }

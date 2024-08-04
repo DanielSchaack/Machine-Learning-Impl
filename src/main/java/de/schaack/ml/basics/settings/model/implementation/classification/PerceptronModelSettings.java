@@ -1,9 +1,7 @@
 package de.schaack.ml.basics.settings.model.implementation.classification;
 
 import de.schaack.ml.basics.data.implementation.DefaultDataPreprocessor;
-import de.schaack.ml.basics.data.implementation.DefaultDataSplitter;
 import de.schaack.ml.basics.data.interfaces.DataPreprocessor;
-import de.schaack.ml.basics.data.interfaces.DataSplitter;
 import de.schaack.ml.basics.functions.activation.implementation.SigmoidActivation;
 import de.schaack.ml.basics.functions.activation.interfaces.ActivationFunction;
 import de.schaack.ml.basics.functions.optimizer.implementation.StochasticGradientDescent;
