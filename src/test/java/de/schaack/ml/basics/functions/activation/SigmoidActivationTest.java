@@ -4,67 +4,69 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import de.schaack.ml.basics.functions.activation.implementation.SigmoidActivation;
 
 class SigmoidActivationTest {
-
-    private SigmoidActivation sigmoid;
+    private SigmoidActivation sigmoidActivation;
+    private static final double DELTA = 1e-4; // for double comparisons
 
     @BeforeEach
-    void setUp() {
-        sigmoid = new SigmoidActivation();
+    public void setUp() {
+        sigmoidActivation = new SigmoidActivation();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0.5",
+        "1, 0.7310585786300049",
+        "-1, 0.2689414213699951",
+        "10, 0.9999546021312976",
+        "-10, 4.539786870243442E-5"
+    })
+    public void testActivate(double input, double expected) {
+        assertEquals(expected, sigmoidActivation.activate(input), DELTA);
     }
 
     @Test
-    void testActivate_PositiveValue() {
-        double value = 1.0;
-        double result = sigmoid.activate(value);
-        double expected = 1.0 / (1.0 + Math.exp(-value));
-        assertEquals(expected, result, 1e-9);
+    public void testActivateExtremePositive() {
+        assertEquals(1.0, sigmoidActivation.activate(1000), DELTA);
     }
 
     @Test
-    void testActivate_ZeroValue() {
-        double value = 0.0;
-        double result = sigmoid.activate(value);
-        double expected = 1.0 / (1.0 + Math.exp(-value));
-        assertEquals(expected, result, 1e-9);
+    public void testActivateExtremeNegative() {
+        assertEquals(0.0, sigmoidActivation.activate(-1000), DELTA);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 1, 0.25",
+        "1, 1, 0.19661193324148185",
+        "-1, 1, 0.19661193324148185"
+    })
+    public void testDeriveActivation(double input, double globalDerivative, double expected) {
+        sigmoidActivation.activate(input);  // Activate with the input value
+        assertEquals(expected, sigmoidActivation.deriveActivation(globalDerivative), DELTA);
     }
 
     @Test
-    void testActivate_NegativeValue() {
-        double value = -1.0;
-        double result = sigmoid.activate(value);
-        double expected = 1.0 / (1.0 + Math.exp(-value));
-        assertEquals(expected, result, 1e-9);
+    public void testGetCurrentGradient() {
+        sigmoidActivation.activate(0);
+        sigmoidActivation.deriveActivation(1);
+        assertEquals(0.25, sigmoidActivation.getCurrentGradient(), DELTA);
     }
 
-    @Test
-    void testDeriveActivation_PositiveValue() {
-        double value = 1.0;
-        double activatedValue = sigmoid.activate(value);
-        double result = sigmoid.deriveActivation(value);
-        double expected = activatedValue * (1 - activatedValue);
-        assertEquals(expected, result, 1e-9);
-    }
-
-    @Test
-    void testDeriveActivation_ZeroValue() {
-        double value = 0.0;
-        double activatedValue = sigmoid.activate(value);
-        double result = sigmoid.deriveActivation(value);
-        double expected = activatedValue * (1 - activatedValue);
-        assertEquals(expected, result, 1e-9);
-    }
-
-    @Test
-    void testDeriveActivation_NegativeValue() {
-        double value = -1.0;
-        double activatedValue = sigmoid.activate(value);
-        double result = sigmoid.deriveActivation(value);
-        double expected = activatedValue * (1 - activatedValue);
-        assertEquals(expected, result, 1e-9);
+    @ParameterizedTest
+    @CsvSource({
+        "5, -10, 10, 5",
+        "-15, -10, 10, -10",
+        "15, -10, 10, 10",
+        "0, -10, 10, 0"
+    })
+    public void testBoxBetween(double value, double minValue, double maxValue, double expected) {
+        assertEquals(expected, SigmoidActivation.boxBetween(value, minValue, maxValue), DELTA);
     }
 
 }

@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced heatmap by having a variable range 
 - Stopping condition in SingleModelPipeline
     - Use Epochs
-    
+- Adjusted tests
 ### TODO
 
 

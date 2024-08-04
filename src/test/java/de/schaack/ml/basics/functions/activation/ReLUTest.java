@@ -40,6 +40,7 @@ class ReLUTest {
     @Test
     void testDeriveActivation_PositiveValue() {
         double value = 2.0;
+        relu.activate(value);
         double result = relu.deriveActivation(value);
         assertEquals(1.0, result, 1e-9);
     }
@@ -47,6 +48,7 @@ class ReLUTest {
     @Test
     void testDeriveActivation_ZeroValue() {
         double value = 0.0;
+        relu.activate(value);
         double result = relu.deriveActivation(value);
         assertEquals(0.0, result, 1e-9);
     }
@@ -54,6 +56,7 @@ class ReLUTest {
     @Test
     void testDeriveActivation_NegativeValue() {
         double value = -1.0;
+        relu.activate(value);
         double result = relu.deriveActivation(value);
         assertEquals(0.0, result, 1e-9);
     }

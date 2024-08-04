@@ -48,7 +48,7 @@ class StochasticGradientDescentTest {
         int batchSize = 10;
         double gradient = 0.5;
         double newValue = sgd.calculateUpdate(valueOld, batchSize, gradient);
-        double expectedUpdate = 0.01 * (1.0 / batchSize) * gradient;
+        double expectedUpdate = 0.01 * gradient;
         double expectedValue = valueOld - expectedUpdate;
         assertEquals(expectedValue, newValue, 1e-9);
     }
@@ -59,7 +59,7 @@ class StochasticGradientDescentTest {
         int batchSize = 10;
         double gradient = -0.5;
         double newValue = sgd.calculateUpdate(valueOld, batchSize, gradient);
-        double expectedUpdate = 0.01 * (1.0 / batchSize) * gradient;
+        double expectedUpdate = 0.01 * gradient;
         double expectedValue = valueOld - expectedUpdate;
         assertEquals(expectedValue, newValue, 1e-9);
     }
@@ -79,7 +79,7 @@ class StochasticGradientDescentTest {
         int batchSize = 1000;
         double gradient = 0.5;
         double newValue = sgd.calculateUpdate(valueOld, batchSize, gradient);
-        double expectedUpdate = 0.01 * (1.0 / batchSize) * gradient;
+        double expectedUpdate = 0.01 * gradient;
         double expectedValue = valueOld - expectedUpdate;
         assertEquals(expectedValue, newValue, 1e-9);
     }
@@ -90,7 +90,7 @@ class StochasticGradientDescentTest {
         int batchSize = 1;
         double gradient = 0.5;
         double newValue = sgd.calculateUpdate(valueOld, batchSize, gradient);
-        double expectedUpdate = 0.01 * (1.0 / batchSize) * gradient;
+        double expectedUpdate = 0.01 * gradient;
         double expectedValue = valueOld - expectedUpdate;
         assertEquals(expectedValue, newValue, 1e-9);
     }

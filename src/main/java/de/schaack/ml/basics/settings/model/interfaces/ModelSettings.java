@@ -1,7 +1,6 @@
 package de.schaack.ml.basics.settings.model.interfaces;
 
 import de.schaack.ml.basics.data.interfaces.DataPreprocessor;
-import de.schaack.ml.basics.data.interfaces.DataSplitter;
 import de.schaack.ml.basics.functions.activation.interfaces.ActivationFunction;
 
 /**
